@@ -9,7 +9,7 @@ import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
 
 const SearchBooks = () => {
-  const [saveBook, { error }] = useMutation(SAVE_BOOK);
+  const [saveBook] = useMutation(SAVE_BOOK);
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
@@ -63,18 +63,15 @@ const SearchBooks = () => {
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
+    console.log(token);
 
     if (!token) {
       return false;
     }
 
     try {
-      // const response = await saveBook(bookToSave, token);
-      await saveBook({ variables: { bookData: bookToSave } });
-
-      // if (!response.ok) {
-      //   throw new Error('something went wrong!');
-      // }
+      const { data } = await saveBook({ variables: { bookData: { ...bookToSave } } });
+      console.log(data);
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
